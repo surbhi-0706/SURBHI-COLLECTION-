@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+
+:root {
+  --burgundy: #4A1824;
+  --rose: #A65D68;
+  --gold: #C6A15B;
+  --ivory: #FFF8EF;
+  --blush: #F2E1DC;
+  --espresso: #241514;
+  --cream: #FFFDF9;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--ivory);
+  color: var(--espresso);
+}
+
+h1, h2, h3 {
+  font-family: 'Cormorant Garamond', serif;
+}
