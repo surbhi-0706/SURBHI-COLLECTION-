@@ -17,8 +17,8 @@ import saree3 from './assets/saree3.jpg'
 
 
 /* =========================================================
-   PRODUCT DATA
-========================================================= */
+   PRODUCTS
+   ========================================================= */
 
 const products = [
   {
@@ -29,11 +29,10 @@ const products = [
     type: 'Silk',
     stock: 8,
     badge: 'Bestseller',
-    description:
-      'Elegant rose-toned silk saree with a timeless finish. Designed for graceful occasions and effortless elegance.',
     image: saree1,
+    description:
+      'A graceful silk saree with rich texture and timeless elegance. Perfect for celebrations, intimate occasions and statement evenings.',
   },
-
   {
     id: 2,
     name: 'Royal Burgundy',
@@ -42,11 +41,10 @@ const products = [
     type: 'Designer',
     stock: 5,
     badge: 'New',
-    description:
-      'A rich burgundy saree designed for statement occasions, combining traditional beauty with modern sophistication.',
     image: saree2,
+    description:
+      'A sophisticated designer saree in a deep burgundy palette, created for a bold yet refined festive look.',
   },
-
   {
     id: 3,
     name: 'Golden Heritage',
@@ -55,60 +53,68 @@ const products = [
     type: 'Festive',
     stock: 3,
     badge: 'Limited',
-    description:
-      'A luxurious golden saree perfect for festive celebrations, weddings and unforgettable evenings.',
     image: saree3,
+    description:
+      'A luxurious festive saree inspired by traditional Indian elegance, featuring a rich golden character.',
   },
 ]
 
 
 /* =========================================================
    NAVBAR
-========================================================= */
+   ========================================================= */
 
 function Navbar({
-  cartItemCount,
   wishlistCount,
+  cartItemCount,
   onSearch,
 }) {
   const location = useLocation()
 
   return (
-    <header className="site-header">
-
-      <div className="announcement">
-        Complimentary shipping on orders above ₹5,000
+    <>
+      <div className="announcement-bar">
+        <span>
+          COMPLIMENTARY SHIPPING ON ORDERS ABOVE ₹5,000
+        </span>
       </div>
 
-      <nav className="navbar">
+      <header className="navbar">
 
-        <Link to="/" className="logo">
-          <span>Surbhi</span>
-          <small>COLLECTION</small>
-        </Link>
+        {/* LOGO */}
 
-        <div className="nav-links">
+        <div className="navbar-left">
 
           <Link
             to="/"
-            className={
-              location.pathname === '/'
-                ? 'active'
-                : ''
-            }
+            className="logo"
+            aria-label="Surbhi Collection Home"
           >
-            Home
+            <span>Surbhi</span>
+            <span>COLLECTION</span>
+          </Link>
+
+        </div>
+
+
+        {/* NAVIGATION */}
+
+        <nav className="navbar-center">
+
+          <Link
+            to="/"
+            className={location.pathname === '/' ? 'active' : ''}
+          >
+            HOME
           </Link>
 
           <Link
             to="/shop"
             className={
-              location.pathname === '/shop'
-                ? 'active'
-                : ''
+              location.pathname === '/shop' ? 'active' : ''
             }
           >
-            Shop
+            SHOP
           </Link>
 
           <Link
@@ -119,26 +125,27 @@ function Navbar({
                 : ''
             }
           >
-            New Arrivals
+            NEW ARRIVALS
           </Link>
 
           <Link
             to="/about"
             className={
-              location.pathname === '/about'
-                ? 'active'
-                : ''
+              location.pathname === '/about' ? 'active' : ''
             }
           >
-            About
+            ABOUT
           </Link>
 
-        </div>
+        </nav>
 
-        <div className="nav-actions">
+
+        {/* ACTIONS */}
+
+        <div className="navbar-right">
 
           <button
-            className="nav-icon"
+            type="button"
             onClick={onSearch}
             aria-label="Search"
           >
@@ -147,173 +154,119 @@ function Navbar({
 
           <Link
             to="/wishlist"
-            className="nav-icon nav-badge"
             aria-label="Wishlist"
           >
             ♡
-
             {wishlistCount > 0 && (
-              <span>{wishlistCount}</span>
+              <sup>{wishlistCount}</sup>
             )}
           </Link>
 
           <Link
             to="/cart"
-            className="nav-icon nav-badge"
             aria-label="Cart"
           >
-            🛍
-
+            ♧
             {cartItemCount > 0 && (
-              <span>{cartItemCount}</span>
+              <sup>{cartItemCount}</sup>
             )}
           </Link>
 
         </div>
 
-      </nav>
-
-    </header>
+      </header>
+    </>
   )
 }
 
 
 /* =========================================================
    SEARCH OVERLAY
-========================================================= */
+   ========================================================= */
 
 function SearchOverlay({
-  open,
-  closeSearch,
   searchTerm,
   setSearchTerm,
-  addToCart,
+  onClose,
 }) {
   const navigate = useNavigate()
 
-  if (!open) {
-    return null
-  }
-
-  const results = products.filter((product) => {
-    const search = searchTerm.toLowerCase()
-
-    return (
-      product.name.toLowerCase().includes(search) ||
-      product.category.toLowerCase().includes(search) ||
-      product.type.toLowerCase().includes(search)
-    )
-  })
-
-  const openProduct = (id) => {
-    closeSearch()
-    setSearchTerm('')
-    navigate(`/product/${id}`)
-  }
+  const matchingProducts = products.filter((product) =>
+    `${product.name} ${product.category}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  )
 
   return (
     <div
       className="search-overlay"
-      onClick={closeSearch}
+      onClick={onClose}
     >
 
       <div
-        className="search-box"
         onClick={(event) => event.stopPropagation()}
       >
 
-        <div className="search-top">
-
-          <p>SEARCH SURBHI COLLECTION</p>
-
-          <button
-            onClick={closeSearch}
-            aria-label="Close search"
-          >
-            ×
-          </button>
-
-        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            color: 'white',
+            border: 'none',
+            background: 'transparent',
+            fontSize: '28px',
+            float: 'right',
+          }}
+        >
+          ×
+        </button>
 
         <input
-          type="text"
           autoFocus
           value={searchTerm}
           onChange={(event) =>
             setSearchTerm(event.target.value)
           }
-          placeholder="Search sarees, collections..."
+          placeholder="Search sarees..."
         />
 
-        <div className="search-popular">
-
-          <span>Popular:</span>
-
-          <button
-            onClick={() => setSearchTerm('Silk')}
-          >
-            Silk
-          </button>
-
-          <button
-            onClick={() => setSearchTerm('Designer')}
-          >
-            Designer
-          </button>
-
-          <button
-            onClick={() => setSearchTerm('Festive')}
-          >
-            Festive
-          </button>
-
-        </div>
-
         {searchTerm && (
-          <div className="search-results-new">
+          <div
+            style={{
+              marginTop: '25px',
+              color: 'white',
+            }}
+          >
 
-            {results.length > 0 ? (
-              results.map((product) => (
-                <div
-                  className="search-result-new"
+            {matchingProducts.length > 0 ? (
+              matchingProducts.map((product) => (
+                <button
                   key={product.id}
-                  onClick={() =>
-                    openProduct(product.id)
-                  }
+                  type="button"
+                  onClick={() => {
+                    navigate(`/product/${product.id}`)
+                    onClose()
+                  }}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '15px 0',
+                    border: 'none',
+                    borderBottom:
+                      '1px solid rgba(255,255,255,.15)',
+                    background: 'transparent',
+                    color: 'white',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
                 >
-
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                  />
-
-                  <div>
-
-                    <p>{product.category}</p>
-
-                    <h3>{product.name}</h3>
-
-                    <strong>
-                      ₹{product.price.toLocaleString('en-IN')}
-                    </strong>
-
-                  </div>
-
-                  <button
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      addToCart(product)
-                    }}
-                  >
-                    +
-                  </button>
-
-                </div>
+                  {product.name}
+                </button>
               ))
             ) : (
-              <div className="search-empty">
+              <p style={{ color: 'white' }}>
                 No sarees found.
-              </div>
+              </p>
             )}
 
           </div>
@@ -328,7 +281,7 @@ function SearchOverlay({
 
 /* =========================================================
    PRODUCT CARD
-========================================================= */
+   ========================================================= */
 
 function ProductCard({
   product,
@@ -343,73 +296,165 @@ function ProductCard({
   )
 
   return (
-    <article
-      className="product-card-new"
-      onClick={() =>
-        navigate(`/product/${product.id}`)
-      }
-    >
+    <article className="product-card">
 
-      <div className="product-image-new">
+      <div
+        className="product-image"
+        style={{
+          position: 'relative',
+        }}
+      >
+
+        <button
+          type="button"
+          onClick={() => toggleWishlist(product)}
+          aria-label="Add to wishlist"
+          style={{
+            position: 'absolute',
+            top: '15px',
+            right: '15px',
+            zIndex: 3,
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            border: '1px solid rgba(50,20,63,.15)',
+            background: 'rgba(255,253,249,.92)',
+            color: isWishlisted
+              ? '#d92f68'
+              : '#32143f',
+            fontSize: '20px',
+          }}
+        >
+          {isWishlisted ? '♥' : '♡'}
+        </button>
 
         {product.badge && (
-          <span className="product-badge">
+          <span
+            style={{
+              position: 'absolute',
+              left: '15px',
+              top: '15px',
+              zIndex: 2,
+              padding: '6px 9px',
+              background: '#d92f68',
+              color: 'white',
+              fontSize: '8px',
+              fontWeight: 700,
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+            }}
+          >
             {product.badge}
           </span>
         )}
 
         <button
-          className={`heart-button ${
-            isWishlisted ? 'liked' : ''
-          }`}
-          onClick={(event) => {
-            event.stopPropagation()
-            toggleWishlist(product)
+          type="button"
+          onClick={() =>
+            navigate(`/product/${product.id}`)
+          }
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: 0,
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
           }}
-          aria-label="Add to wishlist"
         >
-          {isWishlisted ? '♥' : '♡'}
-        </button>
-
-        <img
-          src={product.image}
-          alt={product.name}
-        />
-
-        <div className="quick-add">
-
-          <button
-            onClick={(event) => {
-              event.stopPropagation()
-              addToCart(product)
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: '100%',
+              aspectRatio: '0.78',
+              objectFit: 'cover',
             }}
-          >
-            ADD TO BAG
-          </button>
-
-        </div>
+          />
+        </button>
 
       </div>
 
-      <div className="product-card-info">
 
-        <p className="card-category">
+      <div
+        style={{
+          padding: '20px',
+        }}
+      >
+
+        <p
+          style={{
+            color: '#d92f68',
+            fontSize: '9px',
+            fontWeight: 700,
+            letterSpacing: '1.5px',
+            textTransform: 'uppercase',
+          }}
+        >
           {product.category}
         </p>
 
-        <h3>{product.name}</h3>
+        <h3
+          style={{
+            marginTop: '8px',
+          }}
+        >
+          {product.name}
+        </h3>
 
-        <div className="product-bottom">
+        <p
+          style={{
+            marginTop: '9px',
+          }}
+        >
+          {product.description}
+        </p>
 
-          <span>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '10px',
+            marginTop: '18px',
+          }}
+        >
+
+          <strong
+            style={{
+              color: '#32143f',
+              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontSize: '25px',
+            }}
+          >
             ₹{product.price.toLocaleString('en-IN')}
+          </strong>
+
+          <span
+            style={{
+              color: '#67545e',
+              fontSize: '10px',
+            }}
+          >
+            {product.stock} left
           </span>
 
-          <small>
-            {product.stock} left
-          </small>
-
         </div>
+
+
+        <button
+          type="button"
+          className="gold-button"
+          onClick={() => addToCart(product)}
+          disabled={product.stock === 0}
+          style={{
+            width: '100%',
+            marginTop: '18px',
+          }}
+        >
+          ADD TO CART
+          <span>→</span>
+        </button>
 
       </div>
 
@@ -419,8 +464,8 @@ function ProductCard({
 
 
 /* =========================================================
-   HOME PAGE
-========================================================= */
+   HOME
+   ========================================================= */
 
 function Home({
   wishlist,
@@ -436,9 +481,8 @@ function Home({
 
       <section className="luxury-hero">
 
-        <div className="hero-decoration hero-left">
-          ✦
-        </div>
+        <div className="hero-glow hero-glow-one" />
+        <div className="hero-glow hero-glow-two" />
 
         <div className="hero-copy">
 
@@ -448,7 +492,8 @@ function Home({
 
           <h1>
             Draped in
-            <em> Elegance.</em>
+            <br />
+            <em>Elegance.</em>
           </h1>
 
           <p className="hero-description">
@@ -456,15 +501,99 @@ function Home({
             who carries tradition in her own way.
           </p>
 
-          <button
-            className="gold-button"
-            onClick={() => navigate('/shop')}
-          >
-            EXPLORE THE COLLECTION
-            <span>→</span>
-          </button>
+          <div className="hero-actions">
+
+            <button
+              className="gold-button"
+              onClick={() => navigate('/shop')}
+            >
+              EXPLORE COLLECTION
+              <span>→</span>
+            </button>
+
+            <button
+              className="hero-text-button"
+              onClick={() =>
+                navigate('/new-arrivals')
+              }
+            >
+              NEW ARRIVALS
+              <span>↗</span>
+            </button>
+
+          </div>
+
+          <div className="hero-mini-info">
+
+            <div>
+              <strong>50+</strong>
+              <span>Curated Styles</span>
+            </div>
+
+            <div>
+              <strong>100%</strong>
+              <span>Handpicked</span>
+            </div>
+
+            <div>
+              <strong>01</strong>
+              <span>Signature Edit</span>
+            </div>
+
+          </div>
 
         </div>
+
+
+        <div className="hero-visual">
+
+          <div className="hero-image-frame">
+
+            <img
+              src={saree1}
+              alt="Rose Silk Saree"
+            />
+
+            <div className="hero-image-overlay" />
+
+          </div>
+
+
+          <div className="hero-floating-card">
+
+            <span className="floating-label">
+              FEATURED EDIT
+            </span>
+
+            <strong>
+              Rose Silk
+            </strong>
+
+            <p>
+              Soft. Elegant. Timeless.
+            </p>
+
+            <button
+              type="button"
+              onClick={() =>
+                navigate('/product/1')
+              }
+            >
+              DISCOVER
+              <span>→</span>
+            </button>
+
+          </div>
+
+
+          <div className="hero-circle-text">
+            <span>
+              SURBHI · COLLECTION ·
+            </span>
+          </div>
+
+        </div>
+
 
         <div className="hero-side-text">
 
@@ -478,6 +607,33 @@ function Home({
             BY DESIGN
           </p>
 
+        </div>
+
+      </section>
+
+
+      {/* BRAND STRIP */}
+
+      <section className="brand-strip">
+
+        <div>
+          <span>✦</span>
+          CURATED INDIAN CRAFT
+        </div>
+
+        <div>
+          <span>✦</span>
+          ELEGANCE IN EVERY DRAPE
+        </div>
+
+        <div>
+          <span>✦</span>
+          DESIGNED FOR YOU
+        </div>
+
+        <div>
+          <span>✦</span>
+          TIMELESS BY DESIGN
         </div>
 
       </section>
@@ -498,9 +654,142 @@ function Home({
 
         <p>
           Discover thoughtfully selected sarees that
-          celebrate Indian craftsmanship, rich
-          textures and effortless elegance.
+          celebrate Indian craftsmanship, rich textures
+          and effortless elegance.
         </p>
+
+      </section>
+
+
+      {/* SHOP BY MOOD */}
+
+      <section className="mood-section">
+
+        <div className="section-header-new">
+
+          <div>
+
+            <p className="eyebrow">
+              FIND YOUR DRAPE
+            </p>
+
+            <h2>
+              Shop by Mood
+            </h2>
+
+          </div>
+
+          <button
+            className="text-link"
+            onClick={() => navigate('/shop')}
+          >
+            VIEW COLLECTION
+            <span>→</span>
+          </button>
+
+        </div>
+
+
+        <div className="mood-grid">
+
+          <button
+            className="mood-card mood-card-dark"
+            onClick={() => navigate('/shop')}
+          >
+
+            <div className="mood-number">
+              01
+            </div>
+
+            <div className="mood-content">
+
+              <span>FOR THE</span>
+
+              <h3>
+                Classic
+                <em>Woman</em>
+              </h3>
+
+              <p>
+                Elegant silhouettes with
+                timeless charm.
+              </p>
+
+            </div>
+
+            <span className="mood-arrow">
+              ↗
+            </span>
+
+          </button>
+
+
+          <button
+            className="mood-card mood-card-berry"
+            onClick={() =>
+              navigate('/new-arrivals')
+            }
+          >
+
+            <div className="mood-number">
+              02
+            </div>
+
+            <div className="mood-content">
+
+              <span>FOR THE</span>
+
+              <h3>
+                Modern
+                <em>Muse</em>
+              </h3>
+
+              <p>
+                Contemporary pieces with
+                a traditional soul.
+              </p>
+
+            </div>
+
+            <span className="mood-arrow">
+              ↗
+            </span>
+
+          </button>
+
+
+          <button
+            className="mood-card mood-card-gold"
+            onClick={() => navigate('/shop')}
+          >
+
+            <div className="mood-number">
+              03
+            </div>
+
+            <div className="mood-content">
+
+              <span>FOR THE</span>
+
+              <h3>
+                Festive
+                <em>Spirit</em>
+              </h3>
+
+              <p>
+                Rich textures and statement
+                making elegance.
+              </p>
+
+            </div>
+
+            <span className="mood-arrow">
+              ↗
+            </span>
+
+          </button>
+
+        </div>
 
       </section>
 
@@ -521,6 +810,10 @@ function Home({
               Featured Sarees
             </h2>
 
+            <p className="section-subtitle">
+              Pieces we can't stop thinking about.
+            </p>
+
           </div>
 
           <button
@@ -532,6 +825,7 @@ function Home({
           </button>
 
         </div>
+
 
         <div className="product-grid-new">
 
@@ -550,9 +844,11 @@ function Home({
       </section>
 
 
-      {/* EDITORIAL SECTION */}
+      {/* EDITORIAL */}
 
       <section className="editorial-banner">
+
+        <div className="editorial-pattern" />
 
         <div className="editorial-content">
 
@@ -563,14 +859,20 @@ function Home({
           <h2>
             Made for moments
             <br />
-            worth remembering.
+            <em>worth remembering.</em>
           </h2>
+
+          <p>
+            From intimate celebrations to grand occasions,
+            discover silhouettes that make every entrance count.
+          </p>
 
           <button
             className="outline-button"
             onClick={() => navigate('/shop')}
           >
             DISCOVER SILKS
+            <span>→</span>
           </button>
 
         </div>
@@ -582,7 +884,34 @@ function Home({
       </section>
 
 
-      {/* VALUES */}
+      {/* STATS */}
+
+      <section className="collection-stats">
+
+        <div>
+          <strong>01</strong>
+          <span>Curated Collection</span>
+        </div>
+
+        <div>
+          <strong>03</strong>
+          <span>Signature Sarees</span>
+        </div>
+
+        <div>
+          <strong>∞</strong>
+          <span>Ways to Drape</span>
+        </div>
+
+        <div>
+          <strong>100%</strong>
+          <span>Made to Impress</span>
+        </div>
+
+      </section>
+
+
+      {/* PROMISE */}
 
       <section className="values-section">
 
@@ -596,7 +925,13 @@ function Home({
             Beautifully chosen.
           </h2>
 
+          <p>
+            Because the right saree doesn't just complete
+            an outfit. It becomes part of your story.
+          </p>
+
         </div>
+
 
         <div className="values-grid">
 
@@ -615,6 +950,7 @@ function Home({
 
           </div>
 
+
           <div>
 
             <span>02</span>
@@ -629,6 +965,7 @@ function Home({
             </p>
 
           </div>
+
 
           <div>
 
@@ -649,14 +986,70 @@ function Home({
 
       </section>
 
+
+      {/* FINAL CTA */}
+
+      <section className="home-final-cta">
+
+        <p className="eyebrow">
+          YOUR NEXT SIGNATURE LOOK
+        </p>
+
+        <h2>
+          Find the saree
+          <br />
+          <em>that feels like you.</em>
+        </h2>
+
+        <button
+          className="gold-button"
+          onClick={() => navigate('/shop')}
+        >
+          SHOP SURBHI COLLECTION
+          <span>→</span>
+        </button>
+
+      </section>
+
     </main>
   )
 }
 
 
 /* =========================================================
-   SHOP PAGE
-========================================================= */
+   PAGE HEADER
+   ========================================================= */
+
+function PageHeader({
+  eyebrow,
+  title,
+  description,
+}) {
+  return (
+    <section className="inner-page-header">
+
+      <p className="eyebrow">
+        {eyebrow}
+      </p>
+
+      <h1>
+        {title}
+      </h1>
+
+      {description && (
+        <p>
+          {description}
+        </p>
+      )}
+
+    </section>
+  )
+}
+
+
+/* =========================================================
+   SHOP
+   ========================================================= */
 
 function Shop({
   wishlist,
@@ -666,67 +1059,58 @@ function Shop({
   const [category, setCategory] = useState('All')
   const [sort, setSort] = useState('featured')
 
-  let displayedProducts = [...products]
+  const categories = [
+    'All',
+    'Silk',
+    'Designer',
+    'Festive',
+  ]
 
-  if (category !== 'All') {
-    displayedProducts = displayedProducts.filter(
-      (product) => product.type === category
-    )
-  }
+  let filteredProducts =
+    category === 'All'
+      ? [...products]
+      : products.filter(
+          (product) => product.type === category
+        )
 
   if (sort === 'low') {
-    displayedProducts.sort(
+    filteredProducts.sort(
       (a, b) => a.price - b.price
     )
   }
 
   if (sort === 'high') {
-    displayedProducts.sort(
+    filteredProducts.sort(
       (a, b) => b.price - a.price
     )
   }
 
   return (
-    <main className="inner-page">
+    <main>
 
-      <section className="page-heading">
+      <PageHeader
+        eyebrow="THE COLLECTION"
+        title="Shop Sarees"
+        description="Discover pieces selected for timeless elegance."
+      />
 
-        <p className="eyebrow">
-          THE COLLECTION
-        </p>
-
-        <h1>
-          Sarees
-        </h1>
-
-        <p>
-          Discover pieces chosen for celebrations,
-          evenings and everything in between.
-        </p>
-
-      </section>
-
-
-      <section className="shop-area">
+      <section className="shop-page">
 
         <div className="shop-toolbar">
 
-          <div className="category-tabs">
+          <div className="shop-filters">
 
-            {[
-              'All',
-              'Silk',
-              'Designer',
-              'Festive',
-            ].map((item) => (
+            {categories.map((item) => (
               <button
                 key={item}
                 className={
                   category === item
-                    ? 'selected'
+                    ? 'active'
                     : ''
                 }
-                onClick={() => setCategory(item)}
+                onClick={() =>
+                  setCategory(item)
+                }
               >
                 {item}
               </button>
@@ -734,36 +1118,35 @@ function Shop({
 
           </div>
 
-          <select
-            value={sort}
-            onChange={(event) =>
-              setSort(event.target.value)
-            }
-          >
+          <div className="shop-sort">
 
-            <option value="featured">
-              Sort: Featured
-            </option>
+            <select
+              value={sort}
+              onChange={(event) =>
+                setSort(event.target.value)
+              }
+            >
+              <option value="featured">
+                Featured
+              </option>
 
-            <option value="low">
-              Price: Low to High
-            </option>
+              <option value="low">
+                Price: Low to High
+              </option>
 
-            <option value="high">
-              Price: High to Low
-            </option>
+              <option value="high">
+                Price: High to Low
+              </option>
+            </select>
 
-          </select>
+          </div>
 
         </div>
 
-        <div className="shop-count">
-          {displayedProducts.length} pieces
-        </div>
 
         <div className="product-grid-new">
 
-          {displayedProducts.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -784,67 +1167,41 @@ function Shop({
 
 /* =========================================================
    NEW ARRIVALS
-========================================================= */
+   ========================================================= */
 
 function NewArrivals({
   wishlist,
   toggleWishlist,
   addToCart,
 }) {
-  const newProducts = products.filter(
-    (product) =>
-      product.badge === 'New' ||
-      product.badge === 'Limited'
-  )
-
   return (
-    <main className="inner-page">
+    <main>
 
-      <section className="page-heading">
+      <PageHeader
+        eyebrow="JUST IN"
+        title="New Arrivals"
+        description="Fresh additions to the Surbhi Collection."
+      />
 
-        <p className="eyebrow">
-          JUST ARRIVED
-        </p>
-
-        <h1>
-          New Arrivals
-        </h1>
-
-        <p>
-          Fresh expressions of timeless Indian
-          elegance.
-        </p>
-
-      </section>
-
-
-      <section className="shop-area">
-
-        <div className="new-arrival-intro">
-
-          <div>
-            NEW
-          </div>
-
-          <p>
-            Meet the newest additions to the
-            Surbhi Collection — thoughtfully chosen
-            for your next unforgettable occasion.
-          </p>
-
-        </div>
+      <section className="shop-page">
 
         <div className="product-grid-new">
 
-          {newProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              wishlist={wishlist}
-              toggleWishlist={toggleWishlist}
-              addToCart={addToCart}
-            />
-          ))}
+          {products
+            .filter(
+              (product) =>
+                product.badge === 'New' ||
+                product.badge === 'Bestseller'
+            )
+            .map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+                addToCart={addToCart}
+              />
+            ))}
 
         </div>
 
@@ -857,7 +1214,7 @@ function NewArrivals({
 
 /* =========================================================
    PRODUCT DETAILS
-========================================================= */
+   ========================================================= */
 
 function ProductDetails({
   wishlist,
@@ -871,24 +1228,9 @@ function ProductDetails({
     (item) => item.id === Number(id)
   )
 
-  const [quantity, setQuantity] = useState(1)
-
   if (!product) {
     return (
-      <main className="not-found">
-
-        <h1>
-          Piece not found
-        </h1>
-
-        <button
-          className="gold-button"
-          onClick={() => navigate('/shop')}
-        >
-          BACK TO SHOP
-        </button>
-
-      </main>
+      <NotFound />
     )
   }
 
@@ -896,167 +1238,145 @@ function ProductDetails({
     (item) => item.id === product.id
   )
 
-  const handleAddToCart = () => {
-    addToCart(product, quantity)
-    navigate('/cart')
-  }
+  const relatedProducts = products.filter(
+    (item) => item.id !== product.id
+  )
 
   return (
-    <main className="product-page">
+    <main>
 
-      <button
-        className="back-link"
-        onClick={() => navigate('/shop')}
-      >
-        ← BACK TO COLLECTION
-      </button>
+      <section className="product-details">
 
-      <div className="product-detail-layout">
+        <div className="product-detail-grid">
 
-        <div className="product-detail-image">
+          <div className="product-detail-image">
 
-          {product.badge && (
-            <span className="product-detail-badge">
-              {product.badge}
-            </span>
-          )}
-
-          <img
-            src={product.image}
-            alt={product.name}
-          />
-
-        </div>
-
-
-        <div className="product-detail-info">
-
-          <p className="eyebrow">
-            {product.category}
-          </p>
-
-          <h1>
-            {product.name}
-          </h1>
-
-          <div className="stars">
-            ★★★★★
-            <span>
-              Loved by our customers
-            </span>
-          </div>
-
-          <p className="detail-price">
-            ₹{product.price.toLocaleString('en-IN')}
-          </p>
-
-          <div className="detail-line" />
-
-          <p className="detail-description">
-            {product.description}
-          </p>
-
-
-          <div className="detail-info-row">
-
-            <span>
-              AVAILABILITY
-            </span>
-
-            <strong>
-              {product.stock} pieces available
-            </strong>
+            <img
+              src={product.image}
+              alt={product.name}
+            />
 
           </div>
 
 
-          <div className="quantity-row">
+          <div className="product-detail-info">
 
-            <span>
-              QUANTITY
+            <span className="category">
+              {product.category}
             </span>
 
-            <div className="quantity-box">
+            <h1>
+              {product.name}
+            </h1>
+
+            <div className="price">
+              ₹{product.price.toLocaleString('en-IN')}
+            </div>
+
+            <p>
+              {product.description}
+            </p>
+
+            <p
+              style={{
+                marginTop: '15px',
+                color:
+                  product.stock <= 3
+                    ? '#d92f68'
+                    : '#67545e',
+                fontWeight: 600,
+              }}
+            >
+              {product.stock <= 3
+                ? `Only ${product.stock} left in stock`
+                : `${product.stock} pieces available`}
+            </p>
+
+
+            <div className="product-detail-actions">
 
               <button
+                className="gold-button"
                 onClick={() =>
-                  setQuantity((current) =>
-                    Math.max(1, current - 1)
-                  )
+                  addToCart(product)
                 }
               >
-                −
+                ADD TO CART
+                <span>→</span>
               </button>
 
-              <span>
-                {quantity}
-              </span>
-
               <button
+                className="outline-button"
                 onClick={() =>
-                  setQuantity((current) =>
-                    Math.min(
-                      product.stock,
-                      current + 1
-                    )
-                  )
+                  toggleWishlist(product)
                 }
+                style={{
+                  color: '#32143f',
+                  borderColor: '#32143f',
+                }}
               >
-                +
+                {isWishlisted
+                  ? 'REMOVE FROM WISHLIST'
+                  : 'ADD TO WISHLIST'}
               </button>
 
             </div>
 
           </div>
 
+        </div>
 
-          <div className="detail-actions">
+
+        {/* RELATED */}
+
+        <div
+          style={{
+            maxWidth: '1200px',
+            margin: '100px auto 0',
+          }}
+        >
+
+          <div className="section-header-new">
+
+            <div>
+
+              <p className="eyebrow">
+                YOU MAY ALSO LIKE
+              </p>
+
+              <h2>
+                More to discover
+              </h2>
+
+            </div>
 
             <button
-              className={`detail-heart ${
-                isWishlisted ? 'active' : ''
-              }`}
-              onClick={() =>
-                toggleWishlist(product)
-              }
-              aria-label="Wishlist"
+              className="text-link"
+              onClick={() => navigate('/shop')}
             >
-              {isWishlisted ? '♥' : '♡'}
-            </button>
-
-            <button
-              className="gold-button large"
-              onClick={handleAddToCart}
-            >
-              ADD TO BAG
+              SHOP ALL
               <span>→</span>
             </button>
 
           </div>
 
+          <div className="product-grid-new">
 
-          <div className="product-notes">
-
-            <div>
-              <span>✦</span>
-              Complimentary shipping above ₹5,000
-            </div>
-
-            <div>
-              <span>✦</span>
-              Carefully packed with love
-            </div>
-
-            <div>
-              <span>✦</span>
-              Easy returns on eligible orders
-            </div>
+            {relatedProducts.map((item) => (
+              <ProductCard
+                key={item.id}
+                product={item}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+                addToCart={addToCart}
+              />
+            ))}
 
           </div>
 
         </div>
 
-      </div>
+      </section>
 
     </main>
   )
@@ -1065,60 +1385,44 @@ function ProductDetails({
 
 /* =========================================================
    WISHLIST
-========================================================= */
+   ========================================================= */
 
 function Wishlist({
   wishlist,
   toggleWishlist,
   addToCart,
 }) {
-  const navigate = useNavigate()
-
   return (
-    <main className="inner-page">
+    <main>
 
-      <section className="page-heading">
-
-        <p className="eyebrow">
-          YOUR EDIT
-        </p>
-
-        <h1>
-          Wishlist
-        </h1>
-
-        <p>
-          Pieces you've fallen a little in love with.
-        </p>
-
-      </section>
-
+      <PageHeader
+        eyebrow="YOUR EDIT"
+        title="Wishlist"
+        description="Pieces you've saved for later."
+      />
 
       <section className="wishlist-page">
 
         {wishlist.length === 0 ? (
 
-          <div className="empty-page">
-
-            <div className="empty-symbol">
-              ♡
-            </div>
+          <div className="wishlist-empty">
 
             <h2>
-              Your wishlist is waiting.
+              Nothing here yet.
             </h2>
 
             <p>
-              Save the pieces you love and
-              come back to them anytime.
+              Save the sarees you love and
+              find them here whenever you're ready.
             </p>
 
-            <button
+            <Link
+              to="/shop"
               className="gold-button"
-              onClick={() => navigate('/shop')}
             >
               EXPLORE SAREES
-            </button>
+              <span>→</span>
+            </Link>
 
           </div>
 
@@ -1149,7 +1453,7 @@ function Wishlist({
 
 /* =========================================================
    CART
-========================================================= */
+   ========================================================= */
 
 function Cart({
   cart,
@@ -1165,211 +1469,249 @@ function Cart({
     0
   )
 
+  const shippingThreshold = 5000
+
+  const remaining = Math.max(
+    shippingThreshold - total,
+    0
+  )
+
+  const shippingProgress = Math.min(
+    (total / shippingThreshold) * 100,
+    100
+  )
+
   return (
-    <main className="inner-page">
+    <main>
 
-      <section className="page-heading compact">
+      <PageHeader
+        eyebrow="YOUR EDIT"
+        title="Shopping Bag"
+        description="Review your selected pieces."
+      />
 
-        <p className="eyebrow">
-          YOUR BAG
-        </p>
+      <section className="cart-page">
 
-        <h1>
-          Shopping Cart
-        </h1>
+        {cart.length === 0 ? (
 
-      </section>
+          <div className="wishlist-empty">
 
+            <h2>
+              Your bag is empty.
+            </h2>
 
-      {cart.length === 0 ? (
+            <p>
+              Your next signature saree is waiting.
+            </p>
 
-        <div className="empty-page">
+            <button
+              className="gold-button"
+              onClick={() => navigate('/shop')}
+            >
+              START SHOPPING
+              <span>→</span>
+            </button>
 
-          <div className="empty-symbol">
-            🛍
           </div>
 
-          <h2>
-            Your bag is empty.
-          </h2>
+        ) : (
 
-          <p>
-            Something beautiful is waiting for you.
-          </p>
+          <div className="cart-layout">
 
-          <button
-            className="gold-button"
-            onClick={() => navigate('/shop')}
-          >
-            CONTINUE SHOPPING
-          </button>
+            <div>
 
-        </div>
-
-      ) : (
-
-        <section className="cart-page-layout">
-
-          <div className="cart-page-items">
-
-            {cart.map((item) => (
+              {/* FREE SHIPPING */}
 
               <div
-                className="cart-page-item"
-                key={item.id}
+                style={{
+                  padding: '18px',
+                  marginBottom: '25px',
+                  background: '#fff3ed',
+                  border:
+                    '1px solid #eadbdd',
+                }}
               >
 
-                <img
-                  src={item.image}
-                  alt={item.name}
-                />
+                <p
+                  style={{
+                    marginBottom: '10px',
+                    color: '#32143f',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {remaining > 0
+                    ? `Add ₹${remaining.toLocaleString(
+                        'en-IN'
+                      )} more for complimentary shipping.`
+                    : 'You unlocked complimentary shipping!'}
+                </p>
+
+                <div
+                  style={{
+                    height: '6px',
+                    background: '#eadbdd',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${shippingProgress}%`,
+                      height: '100%',
+                      background: '#d92f68',
+                    }}
+                  />
+                </div>
+
+              </div>
 
 
-                <div className="cart-page-item-info">
+              {cart.map((item) => (
 
-                  <p>
-                    {item.category}
-                  </p>
+                <div
+                  className="cart-item"
+                  key={item.id}
+                >
 
-                  <h3>
-                    {item.name}
-                  </h3>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                  />
 
-                  <span>
-                    ₹{item.price.toLocaleString('en-IN')}
-                  </span>
+                  <div>
+
+                    <h3>
+                      {item.name}
+                    </h3>
+
+                    <p>
+                      ₹{item.price.toLocaleString(
+                        'en-IN'
+                      )}
+                    </p>
+
+                    <div className="cart-quantity">
+
+                      <button
+                        onClick={() =>
+                          decreaseCartQuantity(item.id)
+                        }
+                      >
+                        −
+                      </button>
+
+                      <strong>
+                        {item.quantity}
+                      </strong>
+
+                      <button
+                        onClick={() =>
+                          increaseCartQuantity(item.id)
+                        }
+                      >
+                        +
+                      </button>
+
+                    </div>
+
+                  </div>
 
 
-                  <div className="cart-page-quantity">
+                  <div
+                    style={{
+                      textAlign: 'right',
+                    }}
+                  >
+
+                    <strong
+                      style={{
+                        color: '#32143f',
+                      }}
+                    >
+                      ₹
+                      {(
+                        item.price *
+                        item.quantity
+                      ).toLocaleString('en-IN')}
+                    </strong>
+
+                    <br />
 
                     <button
+                      type="button"
                       onClick={() =>
-                        decreaseCartQuantity(item.id)
+                        removeFromCart(item.id)
                       }
+                      style={{
+                        marginTop: '12px',
+                        border: 'none',
+                        background: 'transparent',
+                        color: '#d92f68',
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        letterSpacing: '1px',
+                      }}
                     >
-                      −
-                    </button>
-
-                    <span>
-                      {item.quantity}
-                    </span>
-
-                    <button
-                      onClick={() =>
-                        increaseCartQuantity(item.id)
-                      }
-                    >
-                      +
+                      REMOVE
                     </button>
 
                   </div>
 
                 </div>
 
+              ))}
 
-                <div className="cart-page-item-right">
+            </div>
 
-                  <strong>
-                    ₹
-                    {(
-                      item.price *
-                      item.quantity
-                    ).toLocaleString('en-IN')}
-                  </strong>
 
-                  <button
-                    onClick={() =>
-                      removeFromCart(item.id)
-                    }
-                  >
-                    Remove
-                  </button>
+            {/* SUMMARY */}
 
-                </div>
+            <aside className="cart-summary">
 
-              </div>
+              <h2>
+                Summary
+              </h2>
 
-            ))}
+              <p>
+                <span>Subtotal</span>
+                <span>
+                  ₹{total.toLocaleString('en-IN')}
+                </span>
+              </p>
+
+              <p>
+                <span>Shipping</span>
+                <span>
+                  {total >= shippingThreshold
+                    ? 'FREE'
+                    : 'Calculated at checkout'}
+                </span>
+              </p>
+
+              <p className="total">
+                <span>Total</span>
+                <strong>
+                  ₹{total.toLocaleString('en-IN')}
+                </strong>
+              </p>
+
+              <button
+                className="gold-button"
+                onClick={() =>
+                  navigate('/checkout')
+                }
+              >
+                PROCEED TO CHECKOUT
+                <span>→</span>
+              </button>
+
+            </aside>
 
           </div>
 
+        )}
 
-          <aside className="cart-summary">
-
-            <p className="eyebrow">
-              ORDER SUMMARY
-            </p>
-
-            <h2>
-              Your Selection
-            </h2>
-
-
-            <div className="summary-row">
-
-              <span>
-                Subtotal
-              </span>
-
-              <strong>
-                ₹{total.toLocaleString('en-IN')}
-              </strong>
-
-            </div>
-
-
-            <div className="summary-row">
-
-              <span>
-                Shipping
-              </span>
-
-              <span>
-                {total >= 5000
-                  ? 'Complimentary'
-                  : 'Calculated at checkout'}
-              </span>
-
-            </div>
-
-
-            <div className="summary-line" />
-
-
-            <div className="summary-total">
-
-              <span>
-                Total
-              </span>
-
-              <strong>
-                ₹{total.toLocaleString('en-IN')}
-              </strong>
-
-            </div>
-
-
-            <button
-              className="gold-button full"
-              onClick={() => navigate('/checkout')}
-            >
-              PROCEED TO CHECKOUT
-              <span>→</span>
-            </button>
-
-
-            <button
-              className="continue-link"
-              onClick={() => navigate('/shop')}
-            >
-              ← Continue Shopping
-            </button>
-
-          </aside>
-
-        </section>
-
-      )}
+      </section>
 
     </main>
   )
@@ -1378,10 +1720,22 @@ function Cart({
 
 /* =========================================================
    CHECKOUT
-========================================================= */
+   ========================================================= */
 
-function Checkout({ cart }) {
+function Checkout({
+  cart,
+}) {
   const navigate = useNavigate()
+
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    pincode: '',
+  })
 
   const total = cart.reduce(
     (sum, item) =>
@@ -1389,257 +1743,232 @@ function Checkout({ cart }) {
     0
   )
 
+  function updateField(event) {
+    const { name, value } = event.target
+
+    setForm((previous) => ({
+      ...previous,
+      [name]: value,
+    }))
+  }
+
+  function handleCheckout(event) {
+    event.preventDefault()
+
+    alert(
+      'Your order details are ready. Razorpay payment integration will be connected next.'
+    )
+  }
+
   if (cart.length === 0) {
     return (
-      <main className="empty-page">
+      <main>
 
-        <h2>
-          Your bag is empty.
-        </h2>
+        <PageHeader
+          eyebrow="CHECKOUT"
+          title="Your bag is empty"
+        />
 
-        <button
-          className="gold-button"
-          onClick={() => navigate('/shop')}
-        >
-          SHOP NOW
-        </button>
+        <div className="wishlist-empty">
+
+          <p>
+            Add a saree before proceeding to checkout.
+          </p>
+
+          <button
+            className="gold-button"
+            onClick={() => navigate('/shop')}
+          >
+            SHOP SAREES
+            <span>→</span>
+          </button>
+
+        </div>
 
       </main>
     )
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-
-    alert(
-      'Your details are saved. Razorpay payment will be connected next.'
-    )
-  }
-
   return (
-    <main className="checkout-page">
+    <main>
 
-      <div className="checkout-header">
+      <PageHeader
+        eyebrow="SECURE CHECKOUT"
+        title="Complete Your Order"
+        description="Enter your details to continue."
+      />
 
-        <button
-          className="back-link"
-          onClick={() => navigate('/cart')}
-        >
-          ← BACK TO BAG
-        </button>
+      <section className="checkout-page">
 
-        <p className="eyebrow">
-          SURBHI COLLECTION
-        </p>
+        <div className="checkout-layout">
 
-        <h1>
-          Checkout
-        </h1>
-
-      </div>
-
-
-      <div className="checkout-layout">
-
-        <form
-          className="checkout-form"
-          onSubmit={handleSubmit}
-        >
-
-          {/* CONTACT */}
-
-          <div className="checkout-block">
-
-            <p className="eyebrow">
-              01 — CONTACT
-            </p>
-
-            <h2>
-              Your details
-            </h2>
-
-            <input
-              required
-              type="text"
-              placeholder="Full name"
-            />
-
-            <input
-              required
-              type="email"
-              placeholder="Email address"
-            />
-
-            <input
-              required
-              type="tel"
-              placeholder="Phone number"
-            />
-
-          </div>
-
-
-          {/* DELIVERY */}
-
-          <div className="checkout-block">
-
-            <p className="eyebrow">
-              02 — DELIVERY
-            </p>
-
-            <h2>
-              Shipping address
-            </h2>
-
-            <input
-              required
-              type="text"
-              placeholder="Address"
-            />
-
-            <div className="two-inputs">
-
-              <input
-                required
-                type="text"
-                placeholder="City"
-              />
-
-              <input
-                required
-                type="text"
-                placeholder="PIN code"
-              />
-
-            </div>
-
-            <input
-              required
-              type="text"
-              placeholder="State"
-            />
-
-          </div>
-
-
-          {/* PAYMENT */}
-
-          <div className="checkout-block">
-
-            <p className="eyebrow">
-              03 — PAYMENT
-            </p>
-
-            <h2>
-              Secure payment
-            </h2>
-
-            <div className="payment-placeholder">
-
-              <span>
-                ♡
-              </span>
-
-              <div>
-
-                <strong>
-                  Secure online payment
-                </strong>
-
-                <p>
-                  Your payment will be securely
-                  processed through our payment gateway.
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <button
-            className="gold-button full"
-            type="submit"
+          <form
+            className="checkout-form"
+            onSubmit={handleCheckout}
           >
-            CONTINUE TO PAYMENT
-            <span>→</span>
-          </button>
 
-        </form>
+            <h2>
+              Delivery Details
+            </h2>
 
+            <label htmlFor="name">
+              Full Name
+            </label>
 
-        {/* ORDER SUMMARY */}
-
-        <aside className="checkout-summary">
-
-          <p className="eyebrow">
-            YOUR ORDER
-          </p>
-
-          <h2>
-            {cart.length}{' '}
-            {cart.length === 1
-              ? 'piece'
-              : 'pieces'}
-          </h2>
+            <input
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={updateField}
+              required
+            />
 
 
-          {cart.map((item) => (
+            <label htmlFor="email">
+              Email Address
+            </label>
 
-            <div
-              className="checkout-product"
-              key={item.id}
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={updateField}
+              required
+            />
+
+
+            <label htmlFor="phone">
+              Phone Number
+            </label>
+
+            <input
+              id="phone"
+              name="phone"
+              value={form.phone}
+              onChange={updateField}
+              required
+            />
+
+
+            <label htmlFor="address">
+              Address
+            </label>
+
+            <textarea
+              id="address"
+              name="address"
+              rows="4"
+              value={form.address}
+              onChange={updateField}
+              required
+            />
+
+
+            <label htmlFor="city">
+              City
+            </label>
+
+            <input
+              id="city"
+              name="city"
+              value={form.city}
+              onChange={updateField}
+              required
+            />
+
+
+            <label htmlFor="state">
+              State
+            </label>
+
+            <input
+              id="state"
+              name="state"
+              value={form.state}
+              onChange={updateField}
+              required
+            />
+
+
+            <label htmlFor="pincode">
+              Pincode
+            </label>
+
+            <input
+              id="pincode"
+              name="pincode"
+              value={form.pincode}
+              onChange={updateField}
+              required
+            />
+
+
+            <button
+              type="submit"
+              className="gold-button"
+              style={{
+                width: '100%',
+                marginTop: '28px',
+              }}
+            >
+              CONTINUE TO PAYMENT
+              <span>→</span>
+            </button>
+
+          </form>
+
+
+          <aside className="checkout-summary">
+
+            <h2>
+              Order Summary
+            </h2>
+
+            {cart.map((item) => (
+              <p key={item.id}>
+
+                <span>
+                  {item.name} × {item.quantity}
+                </span>
+
+                <span>
+                  ₹
+                  {(
+                    item.price *
+                    item.quantity
+                  ).toLocaleString('en-IN')}
+                </span>
+
+              </p>
+            ))}
+
+            <p
+              style={{
+                marginTop: '20px',
+                paddingTop: '18px',
+                borderTop:
+                  '1px solid rgba(255,255,255,.18)',
+                color: 'white',
+                fontWeight: 700,
+              }}
             >
 
-              <img
-                src={item.image}
-                alt={item.name}
-              />
+              <span>
+                Total
+              </span>
 
-              <div>
+              <span>
+                ₹{total.toLocaleString('en-IN')}
+              </span>
 
-                <h3>
-                  {item.name}
-                </h3>
+            </p>
 
-                <p>
-                  Qty: {item.quantity}
-                </p>
+          </aside>
 
-              </div>
+        </div>
 
-              <strong>
-                ₹
-                {(
-                  item.price *
-                  item.quantity
-                ).toLocaleString('en-IN')}
-              </strong>
-
-            </div>
-
-          ))}
-
-
-          <div className="summary-line" />
-
-
-          <div className="summary-total">
-
-            <span>
-              Total
-            </span>
-
-            <strong>
-              ₹{total.toLocaleString('en-IN')}
-            </strong>
-
-          </div>
-
-        </aside>
-
-      </div>
+      </section>
 
     </main>
   )
@@ -1647,80 +1976,48 @@ function Checkout({ cart }) {
 
 
 /* =========================================================
-   ABOUT PAGE
-========================================================= */
+   ABOUT
+   ========================================================= */
 
 function About() {
   return (
     <main className="about-page">
 
-      <section className="about-hero">
+      <PageHeader
+        eyebrow="OUR STORY"
+        title="About Surbhi"
+        description="A collection built around timeless Indian elegance."
+      />
+
+      <section className="about-content">
 
         <p className="eyebrow">
-          OUR STORY
-        </p>
-
-        <h1>
-          Tradition,
-          <em> Reimagined.</em>
-        </h1>
-
-        <p>
-          Surbhi Collection brings together
-          timeless Indian craftsmanship and
-          contemporary elegance.
-        </p>
-
-      </section>
-
-
-      <section className="about-story">
-
-        <div className="about-number">
-          01
-        </div>
-
-        <div>
-
-          <p className="eyebrow">
-            THE BEGINNING
-          </p>
-
-          <h2>
-            Every drape tells
-            <em> a story.</em>
-          </h2>
-
-          <p>
-            We believe a saree is more than a
-            garment. It carries memories,
-            celebrations, traditions and the
-            individuality of the woman who wears it.
-          </p>
-
-          <p>
-            Surbhi Collection is built around
-            thoughtfully selected pieces that bring
-            together the richness of Indian heritage
-            with a sense of modern, effortless style.
-          </p>
-
-        </div>
-
-      </section>
-
-
-      <section className="about-dark">
-
-        <p className="eyebrow">
-          OUR PHILOSOPHY
+          THE SURBHI STORY
         </p>
 
         <h2>
-          Wear your heritage.
+          Tradition,
           <br />
-          <em>Your way.</em>
+          reimagined for today.
         </h2>
+
+        <p>
+          Surbhi Collection is built around the belief
+          that a saree should feel timeless while still
+          feeling completely yours.
+        </p>
+
+        <p>
+          Every piece is thoughtfully selected with an
+          appreciation for Indian craftsmanship, rich
+          textures, elegant colours and modern femininity.
+        </p>
+
+        <p>
+          From everyday elegance to unforgettable
+          celebrations, our collection is designed to
+          become part of your most beautiful moments.
+        </p>
 
       </section>
 
@@ -1731,30 +2028,46 @@ function About() {
 
 /* =========================================================
    FOOTER
-========================================================= */
+   ========================================================= */
 
 function Footer() {
   return (
     <footer className="footer">
 
-      <div className="footer-main">
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: 'auto',
+          padding: '70px 7% 45px',
+          display: 'grid',
+          gridTemplateColumns:
+            '1.4fr 1fr 1fr 1fr',
+          gap: '45px',
+        }}
+      >
 
-        <div className="footer-brand">
+        <div>
 
           <Link
             to="/"
-            className="logo footer-logo"
+            className="logo"
+            style={{
+              alignItems: 'flex-start',
+            }}
           >
-            <span>
-              Surbhi
-            </span>
-
-            <small>
-              COLLECTION
-            </small>
+            <span>Surbhi</span>
+            <span>COLLECTION</span>
           </Link>
 
-          <p>
+          <p
+            style={{
+              marginTop: '25px',
+              maxWidth: '230px',
+              color:
+                'rgba(255,248,243,.72)',
+              fontSize: '13px',
+            }}
+          >
             Timeless sarees.
             <br />
             Modern elegance.
@@ -1763,68 +2076,88 @@ function Footer() {
         </div>
 
 
-        <div className="footer-column">
+        <div>
 
-          <h4>
+          <h4
+            style={{
+              color: '#f1cf73',
+              fontSize: '10px',
+              letterSpacing: '2px',
+              marginBottom: '20px',
+            }}
+          >
             SHOP
           </h4>
 
-          <Link to="/shop">
-            Sarees
-          </Link>
-
-          <Link to="/new-arrivals">
-            New Arrivals
-          </Link>
-
-          <Link to="/wishlist">
-            Wishlist
-          </Link>
+          <p><Link to="/shop">Sarees</Link></p>
+          <p><Link to="/new-arrivals">New Arrivals</Link></p>
+          <p><Link to="/wishlist">Wishlist</Link></p>
 
         </div>
 
 
-        <div className="footer-column">
+        <div>
 
-          <h4>
+          <h4
+            style={{
+              color: '#f1cf73',
+              fontSize: '10px',
+              letterSpacing: '2px',
+              marginBottom: '20px',
+            }}
+          >
             ABOUT
           </h4>
 
-          <Link to="/about">
-            Our Story
-          </Link>
-
-          <a href="#contact">
-            Contact
-          </a>
-
-          <a href="#shipping">
-            Shipping
-          </a>
+          <p><Link to="/about">Our Story</Link></p>
+          <p><Link to="/about">Contact</Link></p>
+          <p><Link to="/about">Shipping</Link></p>
 
         </div>
 
 
-        <div className="footer-column">
+        <div>
 
-          <h4>
+          <h4
+            style={{
+              color: '#f1cf73',
+              fontSize: '10px',
+              letterSpacing: '2px',
+              marginBottom: '20px',
+            }}
+          >
             FOLLOW
           </h4>
 
-          <a href="#instagram">
-            Instagram
-          </a>
+          <p>
+            <a href="#instagram">
+              Instagram
+            </a>
+          </p>
 
-          <a href="#pinterest">
-            Pinterest
-          </a>
+          <p>
+            <a href="#pinterest">
+              Pinterest
+            </a>
+          </p>
 
         </div>
 
       </div>
 
 
-      <div className="footer-bottom">
+      <div
+        className="footer-bottom"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: '20px',
+          padding: '20px 7%',
+          color:
+            'rgba(255,248,243,.55)',
+          fontSize: '10px',
+        }}
+      >
 
         <span>
           © 2026 Surbhi Collection
@@ -1842,15 +2175,54 @@ function Footer() {
 
 
 /* =========================================================
-   MAIN APP
-========================================================= */
+   NOT FOUND
+   ========================================================= */
+
+function NotFound() {
+  return (
+    <main className="not-found">
+
+      <p className="eyebrow">
+        OOPS
+      </p>
+
+      <h1>
+        404
+      </h1>
+
+      <h2>
+        Page not found.
+      </h2>
+
+      <p>
+        The page you're looking for doesn't exist.
+      </p>
+
+      <Link
+        to="/"
+        className="gold-button"
+        style={{
+          marginTop: '25px',
+        }}
+      >
+        BACK HOME
+        <span>→</span>
+      </Link>
+
+    </main>
+  )
+}
+
+
+/* =========================================================
+   APP
+   ========================================================= */
 
 function App() {
 
-  const [cart, setCart] = useState([])
+  const [wishlist, setWishlist] = useState([])
 
-  const [wishlist, setWishlist] =
-    useState([])
+  const [cart, setCart] = useState([])
 
   const [searchOpen, setSearchOpen] =
     useState(false)
@@ -1859,45 +2231,53 @@ function App() {
     useState('')
 
 
-  /* =======================================================
-     CART FUNCTIONS
-  ======================================================= */
+  /* ---------------- WISHLIST ---------------- */
 
-  const addToCart = (
-    product,
-    amount = 1
-  ) => {
+  function toggleWishlist(product) {
+    setWishlist((current) => {
 
-    setCart((currentCart) => {
+      const exists = current.some(
+        (item) => item.id === product.id
+      )
 
-      const existingProduct =
-        currentCart.find(
-          (item) => item.id === product.id
+      if (exists) {
+        return current.filter(
+          (item) => item.id !== product.id
         )
+      }
 
-      if (existingProduct) {
+      return [...current, product]
+    })
+  }
 
-        return currentCart.map((item) => {
 
-          if (item.id !== product.id) {
-            return item
-          }
+  /* ---------------- CART ---------------- */
 
-          return {
-            ...item,
+  function addToCart(product, amount = 1) {
 
-            quantity: Math.min(
-              item.quantity + amount,
-              product.stock
-            ),
-          }
+    setCart((current) => {
 
-        })
+      const existing = current.find(
+        (item) => item.id === product.id
+      )
+
+      if (existing) {
+
+        return current.map((item) =>
+          item.id === product.id
+            ? {
+                ...item,
+                quantity: Math.min(
+                  item.quantity + amount,
+                  product.stock
+                ),
+              }
+            : item
+        )
       }
 
       return [
-        ...currentCart,
-
+        ...current,
         {
           ...product,
           quantity: Math.min(
@@ -1910,49 +2290,43 @@ function App() {
   }
 
 
-  const increaseCartQuantity = (id) => {
+  function increaseCartQuantity(productId) {
 
-    setCart((currentCart) =>
+    setCart((current) =>
+      current.map((item) => {
 
-      currentCart.map((item) => {
-
-        if (item.id !== id) {
+        if (item.id !== productId) {
           return item
         }
 
+        const product = products.find(
+          (item) => item.id === productId
+        )
+
         return {
           ...item,
-
           quantity: Math.min(
             item.quantity + 1,
-            item.stock
+            product.stock
           ),
         }
-
       })
     )
   }
 
 
-  const decreaseCartQuantity = (id) => {
+  function decreaseCartQuantity(productId) {
 
-    setCart((currentCart) =>
-
-      currentCart
-
-        .map((item) => {
-
-          if (item.id !== id) {
-            return item
-          }
-
-          return {
-            ...item,
-            quantity: item.quantity - 1,
-          }
-
-        })
-
+    setCart((current) =>
+      current
+        .map((item) =>
+          item.id === productId
+            ? {
+                ...item,
+                quantity: item.quantity - 1,
+              }
+            : item
+        )
         .filter(
           (item) => item.quantity > 0
         )
@@ -1960,47 +2334,15 @@ function App() {
   }
 
 
-  const removeFromCart = (id) => {
+  function removeFromCart(productId) {
 
-    setCart((currentCart) =>
-      currentCart.filter(
-        (item) => item.id !== id
+    setCart((current) =>
+      current.filter(
+        (item) => item.id !== productId
       )
     )
   }
 
-
-  /* =======================================================
-     WISHLIST FUNCTIONS
-  ======================================================= */
-
-  const toggleWishlist = (product) => {
-
-    setWishlist((currentWishlist) => {
-
-      const exists =
-        currentWishlist.some(
-          (item) => item.id === product.id
-        )
-
-      if (exists) {
-
-        return currentWishlist.filter(
-          (item) => item.id !== product.id
-        )
-      }
-
-      return [
-        ...currentWishlist,
-        product,
-      ]
-    })
-  }
-
-
-  /* =======================================================
-     COUNTS
-  ======================================================= */
 
   const cartItemCount = cart.reduce(
     (sum, item) =>
@@ -2008,167 +2350,127 @@ function App() {
     0
   )
 
-  const wishlistCount =
-    wishlist.length
-
-
-  /* =======================================================
-     APP
-  ======================================================= */
 
   return (
     <BrowserRouter>
 
-      <div className="app">
-
-        <Navbar
-          cartItemCount={cartItemCount}
-          wishlistCount={wishlistCount}
-          onSearch={() => setSearchOpen(true)}
-        />
+      <Navbar
+        wishlistCount={wishlist.length}
+        cartItemCount={cartItemCount}
+        onSearch={() => setSearchOpen(true)}
+      />
 
 
+      {searchOpen && (
         <SearchOverlay
-          open={searchOpen}
-          closeSearch={() =>
-            setSearchOpen(false)
-          }
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          addToCart={addToCart}
+          onClose={() => {
+            setSearchOpen(false)
+            setSearchTerm('')
+          }}
+        />
+      )}
+
+
+      <Routes>
+
+        <Route
+          path="/"
+          element={
+            <Home
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          }
         />
 
+        <Route
+          path="/shop"
+          element={
+            <Shop
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
 
-        <Routes>
+        <Route
+          path="/new-arrivals"
+          element={
+            <NewArrivals
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
 
-          {/* HOME */}
+        <Route
+          path="/product/:id"
+          element={
+            <ProductDetails
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
 
-          <Route
-            path="/"
-            element={
-              <Home
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
-                addToCart={addToCart}
-              />
-            }
-          />
+        <Route
+          path="/wishlist"
+          element={
+            <Wishlist
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              addToCart={addToCart}
+            />
+          }
+        />
 
+        <Route
+          path="/cart"
+          element={
+            <Cart
+              cart={cart}
+              increaseCartQuantity={
+                increaseCartQuantity
+              }
+              decreaseCartQuantity={
+                decreaseCartQuantity
+              }
+              removeFromCart={
+                removeFromCart
+              }
+            />
+          }
+        />
 
-          {/* SHOP */}
+        <Route
+          path="/checkout"
+          element={
+            <Checkout
+              cart={cart}
+            />
+          }
+        />
 
-          <Route
-            path="/shop"
-            element={
-              <Shop
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
-                addToCart={addToCart}
-              />
-            }
-          />
+        <Route
+          path="/about"
+          element={<About />}
+        />
 
+        <Route
+          path="*"
+          element={<NotFound />}
+        />
 
-          {/* NEW ARRIVALS */}
-
-          <Route
-            path="/new-arrivals"
-            element={
-              <NewArrivals
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
-                addToCart={addToCart}
-              />
-            }
-          />
-
-
-          {/* PRODUCT */}
-
-          <Route
-            path="/product/:id"
-            element={
-              <ProductDetails
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
-                addToCart={addToCart}
-              />
-            }
-          />
-
-
-          {/* WISHLIST */}
-
-          <Route
-            path="/wishlist"
-            element={
-              <Wishlist
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
-                addToCart={addToCart}
-              />
-            }
-          />
-
-
-          {/* CART */}
-
-          <Route
-            path="/cart"
-            element={
-              <Cart
-                cart={cart}
-                increaseCartQuantity={
-                  increaseCartQuantity
-                }
-                decreaseCartQuantity={
-                  decreaseCartQuantity
-                }
-                removeFromCart={
-                  removeFromCart
-                }
-              />
-            }
-          />
+      </Routes>
 
 
-          {/* CHECKOUT */}
-
-          <Route
-            path="/checkout"
-            element={
-              <Checkout
-                cart={cart}
-              />
-            }
-          />
-
-
-          {/* ABOUT */}
-
-          <Route
-            path="/about"
-            element={
-              <About />
-            }
-          />
-
-
-          {/* FALLBACK */}
-
-          <Route
-            path="*"
-            element={
-              <NotFound />
-            }
-          />
-
-        </Routes>
-
-
-        <Footer />
-
-      </div>
+      <Footer />
 
     </BrowserRouter>
   )
@@ -2176,29 +2478,7 @@ function App() {
 
 
 /* =========================================================
-   NOT FOUND
-========================================================= */
-
-function NotFound() {
-  const navigate = useNavigate()
-
-  return (
-    <main className="not-found">
-
-      <h1>
-        This page doesn't exist.
-      </h1>
-
-      <button
-        className="gold-button"
-        onClick={() => navigate('/')}
-      >
-        RETURN HOME
-      </button>
-
-    </main>
-  )
-}
-
+   DEFAULT EXPORT — IMPORTANT
+   ========================================================= */
 
 export default App
